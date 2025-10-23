@@ -8,4 +8,4 @@ RUN mvn clean package -DskipTests && cp target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["JAVA", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
