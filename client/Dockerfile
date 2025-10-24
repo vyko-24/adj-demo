@@ -7,6 +7,12 @@ COPY package*json ./
 
 RUN npm install
 
+COPY . .
+
+ARG API_HOST
+ARG API_PORT
+ARG API_BASE
+
 RUN npm run build
 
 #Etapa 2: Imagen
