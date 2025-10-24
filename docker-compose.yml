@@ -3,7 +3,7 @@ services:
   database:
     image: mysql:8
     container_name: adj-database
-    enviroment:
+    environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: adj-demo
     ports:
@@ -26,12 +26,15 @@ services:
       - "3000:80"
     networks:
       - adj-net
+    depends_on:
+      - database
         
   backend:
     image: server:v1.0
     build:
       context: ./servlet
-    enviroment:   
+    container_name: adj-server
+    environment:   
       SERVER_PORT: 8080
       DB_HOST: database
       DB_PORT: 3306
@@ -42,6 +45,8 @@ services:
       - "8081:8080"
     networks:
       - adj-net  
+    depends_on:
+      - frontend
 
 # Aquí se configuran las redes donde se comunican los contenedores
 # docker network create --driver bridge adj-net
@@ -50,7 +55,7 @@ networks:
     external: true
 
 # Aquí se configura los volúmenes ue ocupan los contenedores
-# docker volume create --driver bridge adj-volume
+# docker volume create adj-volume
 volumes:
   adj-volume: 
-  external: true
+    external: true
