@@ -2,59 +2,56 @@ pipeline {
     agent any
 
     stages {
-        stage('Parando los servicios...') {
+        // Parar todos los servicios
+        stage('Parando todos los servicios') {
             steps {
-                script {
-                    bat """
-                    echo Parando servicios existentes...
+                bat '''
+                    echo Parando todos los servicios...
                     docker compose -p adj-demo down || exit /b 0
-                    """
-                }
+                '''
             }
         }
 
-stage('Eliminando imágenes anteriores...') {
-    steps {
-        script {
-            bat '''
-            echo Eliminando imágenes anteriores...
-            for /f "tokens=*" %%i in ('docker images --filter "label=com.docker.compose.project=adj-demo" -q') do (
-                docker rmi -f %%i || echo No se pudo eliminar la imagen %%i
-            )
-            echo Limpieza de imágenes completada.
-            '''
+        // Eliminar las imágenes anteriores
+        stage('Borrando imágenes anteriores') {
+            steps {
+                bat '''
+                    echo Borrando imágenes anteriores...
+                    for /f "tokens=*" %%i in ('docker images --filter "label=com.docker.compose.project=adj-demo" -q') do (
+                        docker rmi -f %%i || echo No se pudo eliminar la imagen %%i
+                    )
+                    echo Limpieza de imágenes completada.
+                '''
+            }
         }
-    }
-}
 
-
-        stage('Obteniendo actualización...') {
+        // Obtener las actualizaciones del repositorio
+        stage('Actualizando...') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Construyendo y desplegando servicios...') {
+        // Construir y desplegar el proyecto
+        stage('Construyendo y desplegando') {
             steps {
-                script {
-                    bat """
-                    echo Construyendo y levantando servicios...
-                    docker compose up --build -d
-                    """
-                }
+                bat '''
+                    echo Construyendo y desplegando servicios...
+                    docker compose -p adj-demo up --build -d
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline ejecutado con éxito'
+            echo '======== Pipeline ejecutado con éxito ========'
         }
         failure {
-            echo 'Hubo un error al ejecutar el pipeline'
+            echo '======== Falló la ejecución del pipeline ========'
         }
         always {
-            echo 'Pipeline finalizado'
+            echo '======== Pipeline finalizado ========'
         }
     }
 }
