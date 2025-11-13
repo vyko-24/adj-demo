@@ -24,7 +24,7 @@ services:
         API_PROTOCOL: https
     container_name: adj-client
     ports:
-      - "3000:80"
+      - "3000:443"
     networks:
       - adj-net
     volumes:
