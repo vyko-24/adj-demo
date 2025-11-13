@@ -21,11 +21,14 @@ services:
         API_HOST: localhost
         API_PORT: 8081
         API_BASE: /adj-api
+        API_PROTOCOL: https
     container_name: adj-client
     ports:
       - "3000:80"
     networks:
       - adj-net
+    volumes:
+      - certbot-conf:/etc/letsencrypt:ro
     depends_on:
       - database
         
